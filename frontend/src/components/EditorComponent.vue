@@ -1,6 +1,15 @@
 <template>
     <div class="static">
-        <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }"> {{ saved }} Name of the file?</div>
+        <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }">{{ name }}</div>
+        <dialog class="z-10" id="filename" :open="openFileNameDialog">
+            <p>You must insert a valid name</p>
+            <form>
+                <input v-model="name" type="text" name="fileName" id="fileName">
+                <button type="button" @click="updateFileNameAndSave">Save</button>
+                <button type="button" @click="closeFileNameDialog">Close</button>
+            </form>
+        </dialog>
+
         <textarea class="h-screen" v-model="content" id="editor"></textarea>
     </div>
 </template>
@@ -15,31 +24,51 @@
     import { useContentStore } from '../stores/content';
 
     const contentStore = useContentStore();
-    const { saved, content } = storeToRefs(contentStore);
+    const { saved, content, name } = storeToRefs(contentStore);
 
-    const customKeyMap = {"Ctrl-S": function(cm) { 
-        contentStore.compile();
+
+    const openFileNameDialog = ref(false);
+    const customKeyMap = {"Ctrl-S": function() { 
+        if (contentStore.isNameValid) {
+            contentStore.compile();
+        } else {
+            openFileNameDialog.value = true;
+        }
     }};
-    
+
     onMounted(() => {
-        const editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
-            lineNumbers: true,
-            theme: "darcula",
-            mode: "application/xml",
-            bordered: true
-        });
+        const editorElement = document.getElementById("editor") as HTMLTextAreaElement;
+        if (editorElement) {
+             const editor = CodeMirror.fromTextArea(editorElement, {
+                lineNumbers: true,
+                theme: "darcula",
+                mode: "application/xml",
+            });
             editor.on('change', function(cm) {
                 content.value = cm.getValue();
                 if (saved.value != false) {
                     saved.value = false;
                 }
-        });
-        editor.addKeyMap(customKeyMap);
+            });
+            editor.addKeyMap(customKeyMap);
+        }
     });
+
+    const closeFileNameDialog = function() {
+        openFileNameDialog.value = false;
+    };
+
+    const updateFileNameAndSave = function() {
+        if (contentStore.isNameValid) {
+            contentStore.compile().then(() => {
+                openFileNameDialog.value = false;
+            });
+        }
+    }
 </script>
 
 <style> 
-    .CodeMirror {
-        height: 100vh;
-    }
+.CodeMirror {
+    height: 100vh;
+}
 </style>

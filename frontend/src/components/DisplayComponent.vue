@@ -2,7 +2,7 @@
     <div v-html="htmlOutput"></div>
 </template>
 
-<script setup>
+<script setup lang="ts">
     import { storeToRefs } from "pinia";
     import { useContentStore } from '../stores/content';
 
