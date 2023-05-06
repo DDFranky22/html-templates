@@ -1,5 +1,8 @@
 <template>
-    <textarea class="h-screen" v-model="content" id="editor"></textarea>
+    <div class="static">
+        <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }"> {{ saved }} Name of the file?</div>
+        <textarea class="h-screen" v-model="content" id="editor"></textarea>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -12,12 +15,10 @@
     import { useContentStore } from '../stores/content';
 
     const contentStore = useContentStore();
-    const { saved, content, htmlOutput } = storeToRefs(contentStore);
+    const { saved, content } = storeToRefs(contentStore);
 
     const customKeyMap = {"Ctrl-S": function(cm) { 
-        htmlOutput.value = content.value;
-        saved.value = true;
-        console.log(htmlOutput.value);
+        contentStore.compile();
     }};
     
     onMounted(() => {
