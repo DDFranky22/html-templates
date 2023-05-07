@@ -8,6 +8,7 @@ import { join } from 'path';
 dotenv.config();
 
 const savedFilePath = join(__dirname, process.env.SAVED_FILE_PATH);
+const templateFilePath = join(__dirname, process.env.TEMPLATE_FILE_PATH);
 const publicIndex = join(__dirname, "..", "public", "index.html");
 
 const app = express();
@@ -30,6 +31,16 @@ app.post('/internal-api/convert', (req, res) => {
     res.send(transformToHtml(mjmlCode));
 });
 
+app.post('/internal-api/save-template', (req, res) => {
+    const content = req.body.content;
+    const fileName = req.body.name;
+    try {
+        fs.writeFileSync(join(templateFilePath, fileName), content);
+    } catch(error) {
+        res.sendStatus(500);
+    }
+    res.send(transformToHtml(content));
+});
 
 app.get("/", (req, res) => {
     res.sendFile(publicIndex);

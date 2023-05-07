@@ -1,14 +1,6 @@
 <template>
     <div class="static">
         <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }">{{ name }}</div>
-        <dialog class="z-10" id="filename" :open="openFileNameDialog">
-            <p>You must insert a valid name</p>
-            <form>
-                <input v-model="name" type="text" name="fileName" id="fileName">
-                <button type="button" @click="updateFileNameAndSave">Save</button>
-                <button type="button" @click="closeFileNameDialog">Close</button>
-            </form>
-        </dialog>
 
         <textarea class="h-screen" v-model="content" id="editor"></textarea>
     </div>
@@ -25,15 +17,11 @@
 
     const contentStore = useContentStore();
     const { saved, content, name } = storeToRefs(contentStore);
-
+    const emit = defineEmits(["saveFile"]);
 
     const openFileNameDialog = ref(false);
     const customKeyMap = {"Ctrl-S": function() { 
-        if (contentStore.isNameValid) {
-            contentStore.compile();
-        } else {
-            openFileNameDialog.value = true;
-        }
+        emit("saveFile");
     }};
 
     onMounted(() => {
@@ -54,17 +42,6 @@
         }
     });
 
-    const closeFileNameDialog = function() {
-        openFileNameDialog.value = false;
-    };
-
-    const updateFileNameAndSave = function() {
-        if (contentStore.isNameValid) {
-            contentStore.compile().then(() => {
-                openFileNameDialog.value = false;
-            });
-        }
-    }
 </script>
 
 <style> 
