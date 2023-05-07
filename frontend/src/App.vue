@@ -1,20 +1,27 @@
 <template>
-    <dialog class="z-10" id="filename" :open="openFileNameDialog">
-        <p>You must insert a valid name</p>
-        <form>
-            <input v-model="name" type="text" name="fileName" id="fileName">
-            <button type="button" @click="updateFileNameAndSave">Save</button>
-            <button type="button" @click="closeFileNameDialog">Close</button>
-        </form>
-    </dialog>
-    <dialog class="z-10" id="filename" :open="openTemplateFileNameDialog">
-        <p>You must insert a valid name</p>
-        <form>
-            <input v-model="name" type="text" name="fileName" id="fileName">
-            <button type="button" @click="updateTempalteNameAndSave">Save</button>
-            <button type="button" @click="closeTemplateDialog">Close</button>
-        </form>
-    </dialog>
+    <DialogComponent
+    :id="filename"
+    :openValue=openFileNameDialog
+    >
+    <p>You must insert a valid name</p>
+    <form>
+        <input v-model="name" type="text" name="fileName" id="fileName">
+        <button type="button" @click="updateFileNameAndSave">Save</button>
+        <button type="button" @click="closeFileNameDialog">Close</button>
+    </form>
+    </DialogComponent>
+    <DialogComponent
+    :id="template"
+    :openValue=openTemplateFileNameDialog
+    >
+    <p>You must insert a valid name</p>
+    <form>
+        <input v-model="name" type="text" name="fileName" id="fileName">
+        <button type="button" @click="updateTempalteNameAndSave">Save</button>
+        <button type="button" @click="closeTemplateDialog">Close</button>
+    </form>
+
+    </DialogComponent>
     <MenuComponent @saveFile="saveFile" @newFile="newFile"/>
     <div class="grid grid-cols-2">
         <EditorComponent @saveFile="saveFile"/>
@@ -23,6 +30,7 @@
 </template>
 
 <script setup lang="ts">
+    import DialogComponent from './components/DialogComponent.vue';
     import MenuComponent from './components/MenuComponent.vue';
     import EditorComponent from './components/EditorComponent.vue';
     import DisplayComponent from './components/DisplayComponent.vue'; 
