@@ -1,7 +1,18 @@
 <template>
     <DialogComponent
-    :id="filename"
-    :openValue=openFileNameDialog
+    :id="'templates'"
+    :openValue="openTemplateListDialog"
+    >
+        <select>
+            <option :value="singleTemplate" v-for="singleTemplate in listTemplates">
+                {{ singleTemplate }}
+            </option>
+        </select>
+    </DialogComponent>
+
+    <DialogComponent
+    :id="'filename'"
+    :openValue="openFileNameDialog"
     >
     <p>You must insert a valid name</p>
     <form>
@@ -11,8 +22,8 @@
     </form>
     </DialogComponent>
     <DialogComponent
-    :id="template"
-    :openValue=openTemplateFileNameDialog
+    :id="'template'"
+    :openValue="openTemplateFileNameDialog"
     >
     <p>You must insert a valid name</p>
     <form>
@@ -22,7 +33,7 @@
     </form>
 
     </DialogComponent>
-    <MenuComponent @saveFile="saveFile" @newFile="newFile"/>
+    <MenuComponent @saveFile="saveFile" @newFile="newFile" @loadTemplates="loadTemplates" />
     <div class="grid grid-cols-2">
         <EditorComponent @saveFile="saveFile"/>
         <DisplayComponent/>
@@ -35,7 +46,7 @@
     import EditorComponent from './components/EditorComponent.vue';
     import DisplayComponent from './components/DisplayComponent.vue'; 
 
-    import { ref, onMounted } from "vue";
+    import { ref } from "vue";
     import { storeToRefs } from "pinia";
     import { useContentStore } from './stores/content';
 
@@ -44,6 +55,24 @@
 
     const openFileNameDialog = ref(false);
     const openTemplateFileNameDialog = ref(false);
+    const openTemplateListDialog = ref(false);
+
+    const listTemplates = ref();
+    const loadTemplates = function() {
+        fetch(import.meta.env.VITE_API_ENDPOINT+"/internal-api/list-templates", {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+        })
+        .then((result) => {
+            result.json().then( (jsonResponse) => {
+                listTemplates.value = jsonResponse;
+                openTemplateListDialog.value = true;
+            });
+        });
+    }
 
     const saveFile = function() {
         if (isTemplate.value) {

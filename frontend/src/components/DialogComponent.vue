@@ -5,10 +5,10 @@
 </template>
 
 
-<script setup lag="ts">
+<script setup lang="ts">
     const props = defineProps({
         id: String,
         openValue: Boolean
     });
-
+    console.log(props);
 </script>

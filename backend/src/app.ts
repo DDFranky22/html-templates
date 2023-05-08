@@ -42,6 +42,12 @@ app.post('/internal-api/save-template', (req, res) => {
     res.send(transformToHtml(content));
 });
 
+
+app.get('/internal-api/list-templates', (req, res) => {
+    const templates = fs.readdirSync(templateFilePath);
+    res.json(templates);
+});
+
 app.get("/", (req, res) => {
     res.sendFile(publicIndex);
 });
