@@ -5,7 +5,7 @@
         <a class="flex-auto" @click="loadTemplates">Load template</a> 
         <a class="flex-auto" @click="save">Save</a> 
         <a class="flex-auto" @click="saveAsTemplate">Save as Template</a> 
-        <a class="flex-auto">Download HTML</a> 
+        <a class="flex-auto" @click="downloadFile">Download HTML</a> 
         <a class="flex-auto">Delete</a> 
     </nav>
 </template>
@@ -33,6 +33,10 @@
 
     const loadTemplates = function() {
         emit("loadTemplates");
+    }
+    
+    const downloadFile = function () {
+        contentStore.download();
     }
 
 </script>

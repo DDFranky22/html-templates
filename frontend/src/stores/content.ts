@@ -48,6 +48,27 @@ export const useContentStore = defineStore({
                 }
             });
         },
+        download() {
+            return fetch(baseUrl+"/internal-api/download-html", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({content: this.content}) 
+            }).then((result) => {
+                if (result.status == 200) {
+                    result.blob().then( (blob) => {
+                       const link = document.createElement('a')
+                       link.href = URL.createObjectURL(blob);
+                       link.download = "file";
+                       link.click();
+                       URL.revokeObjectURL(link.href);
+                    });
+                }
+            });
+
+        },
         saveTemplate() {
             return fetch(baseUrl+"/internal-api/save-template", {
                 method: "POST",

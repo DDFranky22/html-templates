@@ -4,12 +4,14 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
 import { join } from 'path';
+import { randomUUID } from 'crypto';
 
 dotenv.config();
 
 const savedFilePath = join(__dirname, process.env.SAVED_FILE_PATH);
 const templateFilePath = join(__dirname, process.env.TEMPLATE_FILE_PATH);
 const publicIndex = join(__dirname, "..", "public", "index.html");
+const tmpFolder = join(__dirname, process.env.TMP_FOLDER);
 
 const app = express();
 app.use(cors({
@@ -46,6 +48,23 @@ app.post('/internal-api/save-template', (req, res) => {
 app.get('/internal-api/list-templates', (req, res) => {
     const templates = fs.readdirSync(templateFilePath);
     res.json(templates);
+});
+
+app.post('/internal-api/download-html', (req, res) => {
+    const mjmlCode = req.body.content;
+    const html = transformToHtml(mjmlCode);
+    const fileName = randomUUID() + ".html";
+    try {
+        fs.writeFileSync(join(tmpFolder, fileName), html);
+    } catch (error) {
+        console.log(error);
+        res.sendStatus(500);
+    }
+    res.download(join(tmpFolder, fileName), fileName, function(err) {
+        if (!err) {
+            fs.unlinkSync(join(tmpFolder, fileName));
+        }
+    });
 });
 
 app.get("/", (req, res) => {
