@@ -11,7 +11,7 @@ export const useContentStore = defineStore({
         isTemplate: false,
         htmlOutput: '',
         nameValid: false,
-        saveError: false
+        saveError: false,
     }),
     getters: {
         isNameValid: (state) => {
@@ -22,6 +22,18 @@ export const useContentStore = defineStore({
         }
     },
     actions: {
+        clearEditor() {
+            const editor = document.querySelector('.CodeMirror')?.CodeMirror;
+            if (editor) {
+                editor.getdoc().setvalue("");
+            }
+        },
+        setEditorValue(value: string) {
+            const editor = document.querySelector('.CodeMirror')?.CodeMirror;
+            if (editor) {
+                editor.getdoc().setvalue(value);
+            }
+        },
         newFile() {
             this.saved = false;
             this.content = '';
@@ -59,11 +71,11 @@ export const useContentStore = defineStore({
             }).then((result) => {
                 if (result.status == 200) {
                     result.blob().then( (blob) => {
-                       const link = document.createElement('a')
-                       link.href = URL.createObjectURL(blob);
-                       link.download = "file";
-                       link.click();
-                       URL.revokeObjectURL(link.href);
+                        const link = document.createElement('a')
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "file";
+                        link.click();
+                        URL.revokeObjectURL(link.href);
                     });
                 }
             });

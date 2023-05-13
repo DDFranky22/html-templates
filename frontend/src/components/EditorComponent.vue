@@ -1,6 +1,8 @@
 <template>
     <div class="static">
-        <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }">{{ name }}</div>
+        <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }">
+            <span v-if="isTemplate">Template: </span>
+            <span v-if="name">{{ name }}</span></div>
 
         <textarea class="h-screen" v-model="content" id="editor"></textarea>
     </div>
@@ -16,7 +18,7 @@
     import { useContentStore } from '../stores/content';
 
     const contentStore = useContentStore();
-    const { saved, content, name } = storeToRefs(contentStore);
+    const { saved, content, name, isTempalte } = storeToRefs(contentStore);
     const emit = defineEmits(["saveFile"]);
 
     const customKeyMap = {"Ctrl-S": function() { 
@@ -26,18 +28,18 @@
     onMounted(() => {
         const editorElement = document.getElementById("editor") as HTMLTextAreaElement;
         if (editorElement) {
-             const editor = CodeMirror.fromTextArea(editorElement, {
-                lineNumbers: true,
-                theme: "darcula",
-                mode: "application/xml",
-            });
-            editor.on('change', function(cm) {
-                content.value = cm.getValue();
-                if (saved.value != false) {
-                    saved.value = false;
-                }
-            });
-            editor.addKeyMap(customKeyMap);
+           const editor = CodeMirror.fromTextArea(editorElement, {
+               lineNumbers: true,
+               theme: "darcula",
+               mode: "application/xml",
+           });
+           editor.on('change', function(cm) {
+               content.value = cm.getValue();
+               if (saved.value != false) {
+                   saved.value = false;
+               }
+           });
+           editor.addKeyMap(customKeyMap);
         }
     });
 
