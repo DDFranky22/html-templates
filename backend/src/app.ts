@@ -66,7 +66,7 @@ app.get('/internal-api/list-templates', (req, res) => {
     res.json(templates);
 });
 
-app.get('/internal-api/get-template', (req, res) => {
+app.post('/internal-api/get-template', (req, res) => {
     const templateName = req.body.templateName;
     const templateContent = fs.readFileSync(join(templateFilePath, templateName));
     res.json({ content: templateContent.toString(), preview: transformToHtml(templateContent.toString())});

@@ -24,14 +24,18 @@ export const useContentStore = defineStore({
         }
     },
     actions: {
+        getProperty(object: any, key: string): any {
+            return object[key];
+        },
         clearEditor() {
-            const editor = document.querySelector('.CodeMirror')?.CodeMirror;
-            if (editor) {
-                editor.getDoc().setValue("");
-            }
+           this.setEditorValue(""); 
         },
         setEditorValue(value: string) {
-            const editor = document.querySelector('.CodeMirror')?.CodeMirror;
+            const editorObject = document.querySelector('.CodeMirror');
+            let editor = null;
+            if (editorObject && editorObject.hasOwnProperty('CodeMirror')) {
+                editor = this.getProperty(editorObject, "CodeMirror");
+            }
             if (editor) {
                 editor.getDoc().setValue(value);
             }
@@ -95,6 +99,29 @@ export const useContentStore = defineStore({
                this.fileList = files; 
             });
         },
+        selectFile(fileName: string) {
+            return fetch(baseUrl+"/internal-api/get-file", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({fileName: fileName})
+            }).then((response) => {
+                if (response.status == 200) {
+                    return response.json();
+                }
+            }).then( (responseJson) => {
+                if (responseJson) {
+                    this.htmlOutput = responseJson.preview;
+                    this.content = responseJson.content;
+                    this.name = fileName;
+                    this.isTemplate = false;
+                    this.setEditorValue(this.content);
+                    this.saved = true;
+                }
+            });
+        },
         download() {
             return fetch(baseUrl+"/internal-api/download-html", {
                 method: "POST",
@@ -150,5 +177,28 @@ export const useContentStore = defineStore({
                this.templateList = files; 
             });
         },
+        selectTemplate(templateName: string) {
+            return fetch(baseUrl+"/internal-api/get-template", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({templateName: templateName})
+            }).then((response) => {
+                if (response.status == 200) {
+                    return response.json();
+                }
+            }).then( (responseJson) => {
+                if (responseJson) {
+                    this.htmlOutput = responseJson.preview;
+                    this.content = responseJson.content;
+                    this.name = templateName;
+                    this.isTemplate = true;
+                    this.setEditorValue(this.content);
+                    this.saved = true;
+                }
+            });
+        }
     }
 })

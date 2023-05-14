@@ -8,11 +8,12 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        id: String,
+        id: { type: String, required: true },
         openValue: Boolean
     });
 
     const closeDialog = function() {
-        document.getElementById(props.id).close();
+        const dialogElement: HTMLDialogElement = document.getElementById(props.id) as HTMLDialogElement;
+        dialogElement.close();
     };
 </script>
