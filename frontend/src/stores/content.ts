@@ -12,6 +12,8 @@ export const useContentStore = defineStore({
         htmlOutput: '',
         nameValid: false,
         saveError: false,
+        fileList: [],
+        templateList: []
     }),
     getters: {
         isNameValid: (state) => {
@@ -25,13 +27,13 @@ export const useContentStore = defineStore({
         clearEditor() {
             const editor = document.querySelector('.CodeMirror')?.CodeMirror;
             if (editor) {
-                editor.getdoc().setvalue("");
+                editor.getDoc().setValue("");
             }
         },
         setEditorValue(value: string) {
             const editor = document.querySelector('.CodeMirror')?.CodeMirror;
             if (editor) {
-                editor.getdoc().setvalue(value);
+                editor.getDoc().setValue(value);
             }
         },
         newFile() {
@@ -42,9 +44,28 @@ export const useContentStore = defineStore({
             this.htmlOutput = '';
             this.nameValid = false;
             this.saveError = false;
+            this.clearEditor();
         },
-        compile() {
-            return fetch(baseUrl+"/internal-api/convert", {
+        preview() {
+            return fetch(baseUrl+"/internal-api/preview", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({content: this.content})
+            }).then( (result) => {
+                if (result.status == 200) {
+                    return result.text();
+                }
+            }). then( (resultText) => {
+                if (resultText) {
+                    this.htmlOutput = resultText;
+                }
+            });
+        },
+        save() {
+            return fetch(baseUrl+"/internal-api/save-file", {
                 method: "POST",
                 mode: "cors",
                 headers: {
@@ -53,11 +74,25 @@ export const useContentStore = defineStore({
                 body: JSON.stringify({content: this.content, name: this.name}) 
             }).then((result) => {
                 if (result.status == 200) {
-                    result.text().then( (value) => {
-                        this.htmlOutput = value;
-                        this.saved = true;
-                    });
+                    return result.text();
                 }
+            }).then((preview) => {
+                if (preview) {
+                    this.htmlOutput = preview;
+                    this.saved = true;
+                }
+            });
+        },
+        listFiles() {
+            return fetch(baseUrl+"/internal-api/list-files", {
+                method: "GET",
+                mode: "cors"
+            }).then( (result) => {
+                if (result.status == 200) {
+                    return result.json();
+                }
+            }).then( (files) => {
+               this.fileList = files; 
             });
         },
         download() {
@@ -70,13 +105,15 @@ export const useContentStore = defineStore({
                 body: JSON.stringify({content: this.content}) 
             }).then((result) => {
                 if (result.status == 200) {
-                    result.blob().then( (blob) => {
-                        const link = document.createElement('a')
-                        link.href = URL.createObjectURL(blob);
-                        link.download = "file";
-                        link.click();
-                        URL.revokeObjectURL(link.href);
-                    });
+                    return result.blob(); 
+                }
+            }).then((blob) => {
+                if (blob) {
+                    const link = document.createElement('a')
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "file";
+                    link.click();
+                    URL.revokeObjectURL(link.href);
                 }
             });
 
@@ -91,13 +128,27 @@ export const useContentStore = defineStore({
                 body: JSON.stringify({content: this.content, name: this.name}) 
             }).then((result) => {
                 if (result.status == 200) {
-                    result.text().then( (value) => {
-                        this.htmlOutput = value;
-                        this.saved = true;
-                    });
+                    return result.text();
+                }
+            }).then( (preview) => {
+                if (preview) {
+                    this.htmlOutput = preview;
+                    this.saved = true;
                 }
             });
 
-        }
+        },
+        listTemplates() {
+            return fetch(baseUrl+"/internal-api/list-templates", {
+                method: "GET",
+                mode: "cors"
+            }).then( (result) => {
+                if (result.status == 200) {
+                    return result.json();
+                }
+            }).then( (files) => {
+               this.templateList = files; 
+            });
+        },
     }
 })

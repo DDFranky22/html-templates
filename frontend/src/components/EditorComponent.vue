@@ -18,12 +18,17 @@
     import { useContentStore } from '../stores/content';
 
     const contentStore = useContentStore();
-    const { saved, content, name, isTempalte } = storeToRefs(contentStore);
+    const { saved, content, name, isTemplate } = storeToRefs(contentStore);
     const emit = defineEmits(["saveFile"]);
 
-    const customKeyMap = {"Ctrl-S": function() { 
-        emit("saveFile");
-    }};
+    const customKeyMap = {
+        "Ctrl-S": function() { 
+            emit("saveFile");
+        },
+        "Ctrl-P": function() {
+            contentStore.preview();
+        }
+    };
 
     onMounted(() => {
         const editorElement = document.getElementById("editor") as HTMLTextAreaElement;

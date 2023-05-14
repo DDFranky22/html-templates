@@ -3,11 +3,13 @@
     :id="'templates'"
     :openValue="openTemplateListDialog"
     >
+        <p>Available templates</p>
         <select>
-            <option :value="singleTemplate" v-for="singleTemplate in listTemplates">
+            <option :value="singleTemplate" v-for="singleTemplate in templateList">
                 {{ singleTemplate }}
             </option>
         </select>
+        <button type="button" @click="">Select Template</button>
     </DialogComponent>
 
     <DialogComponent
@@ -18,7 +20,6 @@
     <form>
         <input v-model="name" type="text" name="fileName" id="fileName">
         <button type="button" @click="updateFileNameAndSave">Save</button>
-        <button type="button" @click="closeFileNameDialog">Close</button>
     </form>
     </DialogComponent>
     <DialogComponent
@@ -29,7 +30,6 @@
     <form>
         <input v-model="name" type="text" name="fileName" id="fileName">
         <button type="button" @click="updateTempalteNameAndSave">Save</button>
-        <button type="button" @click="closeTemplateDialog">Close</button>
     </form>
 
     </DialogComponent>
@@ -51,28 +51,17 @@
     import { useContentStore } from './stores/content';
 
     const contentStore = useContentStore();
-    const { name, isTemplate } = storeToRefs(contentStore);
+    const { name, isTemplate, templateList } = storeToRefs(contentStore);
 
     const openFileNameDialog = ref(false);
     const openTemplateFileNameDialog = ref(false);
     const openTemplateListDialog = ref(false);
 
-    const listTemplates = ref();
     const loadTemplates = function() {
-        fetch(import.meta.env.VITE_API_ENDPOINT+"/internal-api/list-templates", {
-                method: "GET",
-                mode: "cors",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-        })
-        .then((result) => {
-            result.json().then( (jsonResponse) => {
-                listTemplates.value = jsonResponse;
-                openTemplateListDialog.value = true;
-            });
-        });
-    }
+        contentStore.listTemplates();
+        document.getElementById("templates").showModal();
+        //openTemplateListDialog.value = true;
+    };
 
     const saveFile = function() {
         if (isTemplate.value) {
@@ -100,7 +89,7 @@
 
     const updateFileNameAndSave = function() {
         if (contentStore.isNameValid) {
-            contentStore.compile().then(() => {
+            contentStore.save().then(() => {
                 openFileNameDialog.value = false;
             });
         } else {

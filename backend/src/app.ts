@@ -21,7 +21,12 @@ app.use(express.static("public"));
 app.use(express.json());
 const port = process.env.PORT;
 
-app.post('/internal-api/convert', (req, res) => {
+app.post('/internal-api/preview', (req, res) => {
+    const mjmlCode = req.body.content;
+    res.send(transformToHtml(mjmlCode));
+});
+
+app.post('/internal-api/save-file', (req, res) => {
     const mjmlCode = req.body.content;
     const fileName = req.body.name;
     try {
@@ -31,6 +36,17 @@ app.post('/internal-api/convert', (req, res) => {
         res.sendStatus(500);
     }
     res.send(transformToHtml(mjmlCode));
+});
+
+app.get('/internal-api/list-files', (req, res) => {
+    const files = fs.readdirSync(savedFilePath);
+    res.json(files);
+});
+
+app.post('/internal-api/get-file', (req, res) => {
+    const fileName = req.body.fileName;
+    const fileContent = fs.readFileSync(join(savedFilePath,fileName));
+    res.json({content: fileContent.toString(), preview: transformToHtml(fileContent.toString())});
 });
 
 app.post('/internal-api/save-template', (req, res) => {
@@ -48,6 +64,12 @@ app.post('/internal-api/save-template', (req, res) => {
 app.get('/internal-api/list-templates', (req, res) => {
     const templates = fs.readdirSync(templateFilePath);
     res.json(templates);
+});
+
+app.get('/internal-api/get-template', (req, res) => {
+    const templateName = req.body.templateName;
+    const templateContent = fs.readFileSync(join(templateFilePath, templateName));
+    res.json({ content: templateContent.toString(), preview: transformToHtml(templateContent.toString())});
 });
 
 app.post('/internal-api/download-html', (req, res) => {
