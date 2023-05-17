@@ -199,6 +199,28 @@ export const useContentStore = defineStore({
                     this.saved = true;
                 }
             });
+        },
+        newFromTemplate(templateName: string) {
+            return fetch(baseUrl+"/internal-api/get-template", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({templateName: templateName})
+            }).then((response) => {
+                if (response.status == 200) {
+                    return response.json();
+                }
+            }).then( (responseJson) => {
+                if (responseJson) {
+                    this.htmlOutput = responseJson.preview;
+                    this.content = responseJson.content;
+                    this.isTemplate = false;
+                    this.name = "New email *";
+                    this.setEditorValue(this.content);
+                }
+            });
         }
     }
 })

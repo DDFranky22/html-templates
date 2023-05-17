@@ -38,23 +38,32 @@
         const editorElement = document.getElementById("editor") as HTMLTextAreaElement;
         if (editorElement) {
             
-        function completeAfter(cm, pred) {
-        var cur = cm.getCursor();
-        if (!pred || pred()) setTimeout(function() {
-          if (!cm.state.completionActive)
-            cm.showHint({completeSingle: false});
-        }, 100);
-        return CodeMirror.Pass;
+        function completeAfter(cm: CodeMirror.Editor, pred: Function)  {
+            if (!pred || pred()) setTimeout(function() {
+                if (!cm.state.completionActive)
+                    cm.showHint({completeSingle: false});
+                }, 100);
+            return CodeMirror.Pass;
       }
 
-      function completeIfAfterLt(cm) {
+      function completeAfterStandard(cm: CodeMirror.Editor) {
+        return completeAfter(cm, function(){
+            setTimeout(function() {
+                if (!cm.state.completionActive) {
+                    cm.showHint({completeSingle: false});
+                }
+            }, 100);
+        });
+      }
+
+      function completeIfAfterLt(cm: CodeMirror.Editor) {
         return completeAfter(cm, function() {
           var cur = cm.getCursor();
           return cm.getRange(CodeMirror.Pos(cur.line, cur.ch - 1), cur) == "<";
         });
       }
 
-      function completeIfInTag(cm) {
+      function completeIfInTag(cm: CodeMirror.Editor) {
         return completeAfter(cm, function() {
           var tok = cm.getTokenAt(cm.getCursor());
           if (tok.type == "string" && (!/['"]/.test(tok.string.charAt(tok.string.length - 1)) || tok.string.length == 1)) return false;
@@ -67,7 +76,7 @@
                theme: "darcula",
                mode: "application/xml",
                 extraKeys: {
-                    "'<'": completeAfter,
+                    "'<'": completeAfterStandard,
                     "'/'": completeIfAfterLt,
                     "' '": completeIfInTag,
                     "'='": completeIfInTag,

@@ -12,6 +12,19 @@
         <button type="button" @click="selectTemplate">Select Template</button>
     </DialogComponent>
     <DialogComponent
+    :id="'newFromTemplate'"
+    >
+        <p>Available templates</p>
+        <select v-model="selectedTemplate" >
+            <option disabled value="">Please select one</option>
+            <option :value="singleTemplate" v-for="singleTemplate in templateList">
+                {{ singleTemplate }}
+            </option>
+        </select>
+        <button type="button" @click="newFromTemplate">Select Template</button>
+    </DialogComponent>
+
+    <DialogComponent
     :id="'files'"
     >
         <p>Available files</p>
@@ -26,30 +39,20 @@
 
     <DialogComponent
     :id="'filename'"
-    :openValue="openFileNameDialog"
     >
     <p>You must insert a valid name</p>
-    <form>
+    <form @submit.prevent="saveFile">
         <input v-model="name" type="text" name="fileName" id="fileName">
-        <button type="button" @click="updateFileNameAndSave">Save</button>
+        <button type="button" @click="saveFile">Save</button>
     </form>
     </DialogComponent>
-    <DialogComponent
-    :id="'template'"
-    :openValue="openTemplateFileNameDialog"
-    >
-    <p>You must insert a valid name</p>
-    <form>
-        <input v-model="name" type="text" name="fileName" id="fileName">
-        <button type="button" @click="updateTempalteNameAndSave">Save</button>
-    </form>
-
-    </DialogComponent>
+    
     <MenuComponent 
         @saveFile="saveFile" 
         @newFile="newFile" 
         @loadFiles="loadFiles"
         @loadTemplates="loadTemplates" 
+        @newFromTemplate="loadNewFromTemplates"
     />
     <div class="grid grid-cols-2">
         <EditorComponent @saveFile="saveFile"/>
@@ -70,27 +73,37 @@
     const contentStore = useContentStore();
     const { name, isTemplate, fileList, templateList } = storeToRefs(contentStore);
 
-    const openFileNameDialog = ref(false);
-    const openTemplateFileNameDialog = ref(false);
     const selectedTemplate = ref("");
     const selectedFile = ref("");
 
     const loadTemplates = function() {
         contentStore.listTemplates();
         const dialogElement: HTMLDialogElement = document.getElementById("templates") as HTMLDialogElement;
-        dialogElement.showModal()
+        dialogElement.showModal();
     };
-
+    
     const selectTemplate = function() {
         contentStore.selectTemplate(selectedTemplate.value);
         const dialogElement: HTMLDialogElement = document.getElementById("templates") as HTMLDialogElement;
-        dialogElement.close()
+        dialogElement.close();
     };
+    
+    const loadNewFromTemplates = function() {
+        contentStore.listTemplates();
+        const dialogElement: HTMLDialogElement = document.getElementById("newFromTemplate") as HTMLDialogElement;
+        dialogElement.showModal();
+    }
+
+    const newFromTemplate = function() {
+        contentStore.newFromTemplate(selectedTemplate.value);
+        const dialogElement: HTMLDialogElement = document.getElementById("newFromTemplate") as HTMLDialogElement;
+        dialogElement.close();
+    }
 
     const loadFiles = function() {
         contentStore.listFiles();
         const dialogElement: HTMLDialogElement = document.getElementById("files") as HTMLDialogElement;
-        dialogElement.showModal()
+        dialogElement.showModal();
     };
     
     const selectFile = function() {
@@ -100,39 +113,20 @@
     };
 
     const saveFile = function() {
-        if (isTemplate.value) {
-            saveAsTemplate();
+        if (contentStore.isNameValid) {
+            if (isTemplate.value) {
+                contentStore.saveTemplate();
+            } else {
+                contentStore.save();
+            }
+            const dialogElement: HTMLDialogElement = document.getElementById("filename") as HTMLDialogElement;
+            dialogElement.close();
         } else {
-            updateFileNameAndSave();
+            const dialogElement: HTMLDialogElement = document.getElementById("filename") as HTMLDialogElement;
+            dialogElement.showModal();
         }
     }
-
-    const saveAsTemplate = function() {
-        if (contentStore.isNameValid) {
-            contentStore.saveTemplate();
-        } else {
-            openTemplateFileNameDialog.value = true;
-        }
-    };
     
-    const updateFileNameAndSave = function() {
-        if (contentStore.isNameValid) {
-            contentStore.save().then(() => {
-                openFileNameDialog.value = false;
-            });
-        } else {
-            openFileNameDialog.value = true;
-        }
-    };
-
-    const updateTempalteNameAndSave = function() {
-        if (contentStore.isNameValid) {
-            contentStore.saveTemplate().then( () => {
-                openTemplateFileNameDialog.value = false;
-            });
-        }
-    };
-
     const newFile = function() {
         contentStore.newFile();
     };

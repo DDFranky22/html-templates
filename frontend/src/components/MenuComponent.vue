@@ -1,6 +1,7 @@
 <template>
     <nav class="flex flex-row">
         <a class="flex-auto" @click="newFile">New file</a> 
+        <a class="flex-auto" @click="newFromTemplate">New from template</a> 
         <a class="flex-auto" @click="loadFiles">Load file</a> 
         <a class="flex-auto" @click="loadTemplates">Load template</a> 
         <a class="flex-auto" @click="save">Save</a> 
@@ -16,7 +17,7 @@
     const contentStore = useContentStore();
     const { isTemplate } = storeToRefs(contentStore);
 
-    const emit = defineEmits(["newFile", "saveFile", "loadFiles", "loadTemplates"]);
+    const emit = defineEmits(["newFile", "newFromTemplate", "saveFile", "loadFiles", "loadTemplates"]);
 
     const saveAsTemplate = function() {
         isTemplate.value = true;
@@ -37,6 +38,10 @@
 
     const loadFiles = function() {
         emit("loadFiles");
+    }
+
+    const newFromTemplate = function() {
+        emit("newFromTemplate");
     }
     
     const downloadFile = function () {
