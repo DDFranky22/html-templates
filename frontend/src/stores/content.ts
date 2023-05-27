@@ -13,7 +13,8 @@ export const useContentStore = defineStore({
         nameValid: false,
         saveError: false,
         fileList: [],
-        templateList: []
+        templateList: [],
+        darkMode: false
     }),
     getters: {
         isNameValid: (state) => {
