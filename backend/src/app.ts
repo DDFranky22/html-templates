@@ -5,6 +5,7 @@ import cors from 'cors';
 import fs from 'fs';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
+import nodemailer from 'nodemailer';
 
 dotenv.config();
 
@@ -12,6 +13,10 @@ const savedFilePath = join(__dirname, process.env.SAVED_FILE_PATH);
 const templateFilePath = join(__dirname, process.env.TEMPLATE_FILE_PATH);
 const publicIndex = join(__dirname, "..", "public", "index.html");
 const tmpFolder = join(__dirname, process.env.TMP_FOLDER);
+const mailerService = process.env.MAILER_SERVICE;
+const mailerUser = process.env.MAILER_USER;
+const mailerPassword = process.env.MAILER_PASSWORD;
+const mailerSender = process.env.MAILER_SENDER;
 
 const app = express();
 app.use(cors({
@@ -38,7 +43,7 @@ app.post('/internal-api/save-file', (req, res) => {
     res.send(transformToHtml(mjmlCode));
 });
 
-app.get('/internal-api/list-files', (req, res) => {
+app.get('/internal-api/list-files', (_, res) => {
     const files = fs.readdirSync(savedFilePath);
     res.json(files);
 });
@@ -61,7 +66,7 @@ app.post('/internal-api/save-template', (req, res) => {
 });
 
 
-app.get('/internal-api/list-templates', (req, res) => {
+app.get('/internal-api/list-templates', (_, res) => {
     const templates = fs.readdirSync(templateFilePath);
     res.json(templates);
 });
@@ -89,7 +94,37 @@ app.post('/internal-api/download-html', (req, res) => {
     });
 });
 
-app.get("/", (req, res) => {
+app.post('/internal-api/send-mail', (req, res) => {
+    const mjmlCode = req.body.content;
+    const destinationMail = req.body.destinationMail;
+    const html = transformToHtml(mjmlCode);
+    const transporter = nodemailer.createTransport({
+        service: mailerService,
+        auth: {
+            user: mailerUser,
+            pass: mailerPassword
+        }
+    });
+
+    const mailOptions = {
+        from: mailerSender,
+        to: destinationMail,
+        subject: "Test from project",
+        html: html 
+    };
+
+    console.log(destinationMail, mailerSender);
+
+    transporter.sendMail(mailOptions, function(error, _) {
+        if (error) {
+            return res.sendStatus(500);
+        } else {
+            return res.sendStatus(200);
+        }
+    });
+});
+
+app.get("/", (_, res) => {
     res.sendFile(publicIndex);
 });
 

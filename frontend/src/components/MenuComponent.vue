@@ -42,14 +42,11 @@
             </svg>
             Download HTML
         </button>
-        <button class="flex-auto" @click="toggleDarkMode">
-            <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+        <button class="flex-auto" @click="sendTestMail">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
             </svg>
-            <svg v-if="!darkMode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-            </svg>
-            Reader mode
+            Send test mail 
         </button>
     </nav>
 </template>
@@ -58,9 +55,9 @@
     import { useContentStore } from '../stores/content';
 
     const contentStore = useContentStore();
-    const { isTemplate, darkMode } = storeToRefs(contentStore);
+    const { isTemplate } = storeToRefs(contentStore);
 
-    const emit = defineEmits(["newFile", "newFromTemplate", "saveFile", "loadFiles", "loadTemplates"]);
+    const emit = defineEmits(["newFile", "newFromTemplate", "saveFile", "loadFiles", "loadTemplates", "sendTestMail"]);
 
     const saveAsTemplate = function() {
         isTemplate.value = true;
@@ -90,8 +87,8 @@
     const downloadFile = function () {
         contentStore.download();
     }
-    
-    const toggleDarkMode = function() {
-        darkMode.value = !darkMode.value;
+
+    const sendTestMail = function() {
+       emit("sendTestMail"); 
     }
 </script>

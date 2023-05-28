@@ -222,6 +222,20 @@ export const useContentStore = defineStore({
                     this.setEditorValue(this.content);
                 }
             });
+        },
+        sendTestMail(destinationMail: string) {
+            return fetch(baseUrl+"/internal-api/send-mail", {
+                method: "POST",
+                mode: "cors",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({content: this.content, destinationMail: destinationMail})
+            }).then((response) => {
+                if (response.status == 200) {
+                    return response.json();
+                }
+            });
         }
     }
 })
