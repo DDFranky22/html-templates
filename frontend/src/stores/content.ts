@@ -7,7 +7,7 @@ export const useContentStore = defineStore({
     state: () => ({
         saved: false,
         content: '',
-        name: 'New email *',
+        name: '',
         isTemplate: false,
         htmlOutput: '',
         nameValid: false,
@@ -18,9 +18,11 @@ export const useContentStore = defineStore({
     }),
     getters: {
         isNameValid: (state) => {
-            if (state.name != "New email *" && state.name.match(validNameRegex)) {
+            if (state.name != "" && state.name.match(validNameRegex)) {
+                console.log(state.nameValid, state.name);
                 return state.nameValid = true;
             }
+            console.log(state.nameValid, state.name);
             return state.nameValid = false;
         }
     },
@@ -44,7 +46,7 @@ export const useContentStore = defineStore({
         newFile() {
             this.saved = false;
             this.content = '';
-            this.name = "New email *";
+            this.name = "";
             this.isTemplate = false;
             this.htmlOutput = '';
             this.nameValid = false;
@@ -218,7 +220,7 @@ export const useContentStore = defineStore({
                     this.htmlOutput = responseJson.preview;
                     this.content = responseJson.content;
                     this.isTemplate = false;
-                    this.name = "New email *";
+                    this.name = "";
                     this.setEditorValue(this.content);
                 }
             });

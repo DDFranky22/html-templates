@@ -2,7 +2,9 @@
     <div class="static">
         <div class="top-0 z-10" :class="{ 'bg-green-700': saved, 'bg-red-700': !saved }">
             <span v-if="isTemplate">Template: </span>
-            <span v-if="name">{{ name }}</span></div>
+            <span v-if="name">{{ name }}</span>
+            <span v-if="!name">New file *</span>
+        </div>
 
         <textarea class="h-screen" v-model="content" id="editor"></textarea>
     </div>
