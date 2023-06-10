@@ -1,4 +1,4 @@
-# Email Templates thingy
+# mjml Email Templates Creator
 
 This repo is a combination of two projects Vue 3 + node that gives you a graphic interface to realize html templates using the mjml library.
 The aim of the project is to have a convenient way to create/store/update emails using the mjml syntax and see the preview of these emails with the minimal amount of manual labor.
@@ -76,3 +76,4 @@ MAILER_SENDER=
 # the endpoint of the node application
 VITE_API_ENDPOINT=http://localhost:3000
 ```
+
