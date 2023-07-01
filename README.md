@@ -1,5 +1,8 @@
 # mjml Email Templates Creator
 
+*** WARNING ***
+This project is meant to be used only locally and not deployed to a server.
+
 This repo is a combination of two projects Vue 3 + node that gives you a graphic interface to realize html templates using the mjml library.
 The aim of the project is to have a convenient way to create/store/update emails using the mjml syntax and see the preview of these emails with the minimal amount of manual labor.
 The editor (Codemirror 5) also provides an autocomplete option for the tags available (the list of tags was taken from the mjml documentation).
