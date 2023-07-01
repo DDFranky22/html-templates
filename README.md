@@ -1,6 +1,6 @@
 # mjml Email Templates Creator
 
-*** WARNING ***
+## WARNING ##
 This project is meant to be used only locally and not deployed to a server.
 
 This repo is a combination of two projects Vue 3 + node that gives you a graphic interface to realize html templates using the mjml library.
