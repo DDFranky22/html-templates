@@ -1,5 +1,5 @@
 <template>
-    <div class="relative" :class="{ 'bg-gray-950': darkMode, 'text-white': darkMode}">
+    <div class="relative" :class="{ 'bg-zinc-900': darkMode, 'text-white': darkMode}">
         <div class="absolute top-0 right-4">
             <button class="flex-auto border-2" @click="toggleDarkMode" :class="{ 'border-white': darkMode, 'border-black': !darkMode }">
                 <svg v-if="darkMode" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 inline-block text-white">
