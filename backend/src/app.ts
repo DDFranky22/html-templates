@@ -113,8 +113,6 @@ app.post('/internal-api/send-mail', (req, res) => {
         html: html 
     };
 
-    console.log(destinationMail, mailerSender);
-
     transporter.sendMail(mailOptions, function(error, _) {
         if (error) {
             return res.sendStatus(500);
