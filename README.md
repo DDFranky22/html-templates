@@ -23,10 +23,10 @@ In order to launch the application itself you need to do a couple of steps.
 
 1. Create the .env file or create the appropriate environment variables for both the projects backend and frontend.
 2. Go inside the frontend project
-3. Run ``node run build``
+3. Run ``npm run build``
 4. If everything is ok, go inside the backend project
-5. Run ``node run build``
-6. Run ``node run start``
+5. Run ``npm run build``
+6. Run ``npm run start``
 
 If everything worked correctly you should be able to go to ``localhost:{port}`` and be greeted with the user interface.
 
