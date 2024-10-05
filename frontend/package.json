@@ -9,18 +9,18 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "codemirror": "^5.65.13",
-    "pinia": "^2.0.35",
+    "codemirror": "^5.65.18",
+    "pinia": "^2.2.4",
     "vue": "^3.2.47"
   },
   "devDependencies": {
-    "@types/codemirror": "^5.60.7",
-    "@vitejs/plugin-vue": "^4.1.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.31",
-    "tailwindcss": "^3.3.2",
-    "typescript": "^5.0.2",
+    "@types/codemirror": "^5.60.15",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2",
     "vite": "^4.5.5",
-    "vue-tsc": "^1.4.2"
+    "vue-tsc": "^2.0.0"
   }
 }
