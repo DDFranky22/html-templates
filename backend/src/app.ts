@@ -51,7 +51,8 @@ app.get('/internal-api/list-files', (_, res) => {
 app.post('/internal-api/get-file', (req, res) => {
     const fileName = req.body.fileName;
     const fileContent = fs.readFileSync(join(savedFilePath,fileName));
-    res.json({content: fileContent.toString(), preview: transformToHtml(fileContent.toString())});
+    const previewContent = transformToHtml(fileContent.toString());
+    res.json({content: fileContent.toString(), preview: previewContent});
 });
 
 app.post('/internal-api/save-template', (req, res) => {
@@ -131,6 +132,10 @@ app.listen(port, () => {
 });
 
 
-function transformToHtml(mjmlCode: string): string{
-    return mjml2html(mjmlCode).html;
+function transformToHtml(mjmlCode: string): string {
+    try {
+        return mjml2html(mjmlCode).html;
+    } catch (e) {
+        return "";
+    }
 }
