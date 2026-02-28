@@ -6,7 +6,7 @@ A local-first GUI for creating, editing, previewing and exporting HTML email tem
 
 This tool is intentionally designed to run **locally only** and should not be deployed to a public server.
 
-Several of the underlying libraries may have high-severity vulenrabilities that make server-side exposure unsafe. Since the entier value of the tool can be achieved without a network - writing an HTML email, preview it and then export the resulting HTML - there is no real benefit in taking such a risk. Running it locally keeps your machine safe and your workfow simple.
+Several of the underlying libraries may have high-severity vulnerabilities that make server-side exposure unsafe. Since the entire value of the tool can be achieved without a network - writing an HTML email, preview it and then export the resulting HTML - there is no real benefit in taking such a risk. Running it locally keeps your machine safe and your workflow simple.
 
 ## Overview
 
@@ -19,7 +19,7 @@ This repo is a monorepo containing two projects:
 
 - Node.js 18 or higher (use of [nvm](https://github.com/nvm-sh/nvm) is recommended)
 
-## Getting startd
+## Getting started
 
 ### 1. Clone repository and install
 
@@ -37,6 +37,8 @@ Both projects require a `.env` file. Each contains a `.env.dist` file with all a
 cp backend/.env.dist backend/.env
 cp frontend/.env.dist frontend/.env
 ```
+
+#### Backend `.env`
 
 ```env
 # Directory where created files are saved
