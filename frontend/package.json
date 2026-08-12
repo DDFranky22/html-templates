@@ -17,7 +17,7 @@
     "@types/codemirror": "^5.60.15",
     "@vitejs/plugin-vue": "^6.0.7",
     "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.18",
+    "postcss": "^8.5.26",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2",
     "vite": "^8.0.16",
